@@ -7,9 +7,7 @@ import { TIngredient } from '@utils-types';
 import { TOrderInfo } from '../ui/order-info/type';
 
 export const OrderInfo: FC = () => {
-  const orderData = useSelector(
-    (state: RootState) => state.orderData.orderData
-  );
+  const orderData = useSelector((state: RootState) => state.orders.orderData);
   const ingredients = useSelector(
     (state: RootState) => state.ingredients.ingredients
   );

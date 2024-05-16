@@ -5,22 +5,10 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../services/store';
 
 export const BurgerConstructor: FC = () => {
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  // const constructorItems = {
-  //   bun: {
-  //     price: 0
-  //   },
-  //   ingredients: []
-  // };
-  // const orderRequest = false;
-  // const orderModalData = null;
-
   const constructorItems = useSelector(
     (state: RootState) => state.constructorItems
   );
-  const orderRequest = useSelector(
-    (state: RootState) => state.orderRequest.request
-  );
+  const orderRequest = useSelector((state: RootState) => state.orders.request);
   const orderModalData = useSelector(
     (state: RootState) => state.orderModalData.data
   );
@@ -39,8 +27,6 @@ export const BurgerConstructor: FC = () => {
       ),
     [constructorItems]
   );
-
-  // return null;
 
   return (
     <BurgerConstructorUI

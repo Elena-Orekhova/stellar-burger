@@ -11,15 +11,10 @@ const getOrders = (orders: TOrder[], status: string): number[] =>
     .slice(0, 20);
 
 export const FeedInfo: FC = () => {
-  /** TODO: взять переменные из стора */
-  // const orders: TOrder[] = [];
-  // const feed = {};
   const orders = useSelector((state: RootState) => state.orders);
-  const feed = useSelector((state: RootState) => state.feed);
+  const feed = useSelector((state: RootState) => state.orders);
 
-  // const readyOrders = getOrders(orders, 'done');
   const readyOrders = getOrders(orders.orders, 'done');
-  // const pendingOrders = getOrders(orders, 'pending');
   const pendingOrders = getOrders(orders.orders, 'pending');
 
   return (
