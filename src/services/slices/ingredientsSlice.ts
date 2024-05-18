@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getIngredientsApi } from '@api';
 import { TIngredient } from '@utils-types';
-import { RootState } from '../../services/store';
+import { RootState } from '../store';
 
 // Thunk для загрузки ингредиентов
 export const fetchIngredients = createAsyncThunk(

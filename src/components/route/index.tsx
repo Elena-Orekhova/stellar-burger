@@ -22,18 +22,18 @@ export const ProtectedRoute = ({
   unAuthOnly = false
 }: ProtectedRouteProps) => {
   const isAuthChecked = useSelector(selectIsAuthChecked);
+  console.log('!!!!!!', isAuthChecked);
+  // if (!isAuthChecked) {
+  //   return <Preloader />;
+  // }
 
-  if (!isAuthChecked) {
-    return <Preloader />;
-  }
+  // const isAuthenticated = true;
 
-  const isAuthenticated = true;
-
-  if (unAuthOnly && isAuthenticated) {
+  if (unAuthOnly) {
     return <Navigate to='/' replace />;
   }
 
-  if (!unAuthOnly && !isAuthenticated) {
+  if (!unAuthOnly) {
     return <Navigate to='/login' replace />;
   }
 

@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from '../../services/store';
 import {
   fetchIngredients,
   selectIngredients
-} from '../slices/ingredientsSlice';
+} from '../../services/slices/ingredientsSlice';
 
 export const BurgerIngredients: FC = () => {
   const dispatch = useDispatch();

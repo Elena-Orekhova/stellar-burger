@@ -1,20 +1,36 @@
-import { FC, useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../services/store';
+import { FC, useMemo, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../../services/store';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 import { TOrderInfo } from '../ui/order-info/type';
+import { fetchOrder } from '../../services/slices/ordersSlice';
+import { useParams } from 'react-router-dom';
+import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 
 export const OrderInfo: FC = () => {
   const orderData = useSelector((state: RootState) => state.orders.orderData);
   const ingredients = useSelector(
     (state: RootState) => state.ingredients.ingredients
   );
+  const dispatch = useDispatch<AppDispatch>();
+  const { number } = useParams<{ number: string }>();
+
+  useEffect(() => {
+    if (!ingredients.length) {
+      dispatch(fetchIngredients());
+    }
+  }, [dispatch, ingredients.length]);
+
+  useEffect(() => {
+    if (number) {
+      dispatch(fetchOrder(+number));
+    }
+  }, [dispatch]);
 
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
-
     const date = new Date(orderData.createdAt);
 
     type TIngredientsWithCount = {

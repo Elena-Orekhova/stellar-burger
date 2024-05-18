@@ -1,5 +1,11 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { loginUserApi, logoutApi, getUserApi } from '@api';
+import {
+  loginUserApi,
+  logoutApi,
+  getUserApi,
+  registerUserApi,
+  TRegisterData
+} from '@api';
 import { TUser } from '@utils-types';
 import { RootState } from '../../services/store';
 
@@ -17,6 +23,15 @@ export const fetchUser = createAsyncThunk('auth/fetchUser', async () => {
   const data = await getUserApi();
   return data.user;
 });
+
+// Thunk для регистрации пользователе
+export const registerUser = createAsyncThunk(
+  'auth/registerUser',
+  async (body: TRegisterData) => {
+    const data = await registerUserApi(body);
+    return data.user;
+  }
+);
 
 // Селекторы
 export const selectAuthState = (state: RootState) => state.auth;
@@ -58,6 +73,15 @@ const authSlice = createSlice({
         state.user = action.payload.user;
       })
       .addCase(fetchUser.fulfilled, (state, action) => {
+        console.log(action);
+        state.isAuthenticated = true;
+        state.user = action.payload;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.isAuthenticated = false;
+        state.user = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
         state.isAuthenticated = true;
         state.user = action.payload;
       });
