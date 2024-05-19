@@ -4,17 +4,37 @@ import {
   logoutApi,
   getUserApi,
   registerUserApi,
-  TRegisterData
+  TRegisterData,
+  TLoginData,
+  forgotPasswordApi,
+  resetPasswordApi,
+  fetchWithRefresh,
+  TRefreshResponse,
+  TAuthResponse
 } from '@api';
 import { TUser } from '@utils-types';
 import { RootState } from '../../services/store';
+import { deleteCookie, setCookie } from '../../utils/cookie';
+
+// Thunk для отправки запросов с автоматическим обновлением токенов
+export const fetchWithRefreshThunk = createAsyncThunk<
+  TRefreshResponse,
+  { url: string; options: RequestInit }
+>('api/fetchWithRefresh', async ({ url, options }, { rejectWithValue }) => {
+  try {
+    const data = await fetchWithRefresh<TRefreshResponse>(url, options);
+    return data;
+  } catch (err) {
+    return rejectWithValue(err);
+  }
+});
 
 // Thunk для аутентификации пользователя
-export const loginUser = createAsyncThunk(
+export const loginUser = createAsyncThunk<TUser, TLoginData>(
   'auth/loginUser',
-  async (loginData: { email: string; password: string }) => {
+  async (loginData) => {
     const data = await loginUserApi(loginData);
-    return data;
+    return data.user;
   }
 );
 
@@ -24,12 +44,47 @@ export const fetchUser = createAsyncThunk('auth/fetchUser', async () => {
   return data.user;
 });
 
-// Thunk для регистрации пользователе
-export const registerUser = createAsyncThunk(
+// Thunk для регистрации пользователеля
+export const registerUser = createAsyncThunk<TAuthResponse, TRegisterData>(
   'auth/registerUser',
-  async (body: TRegisterData) => {
+  async (body) => {
     const data = await registerUserApi(body);
-    return data.user;
+    return data;
+  }
+);
+
+// Thunk для запроса сброса пароля
+export const forgotPassword = createAsyncThunk(
+  'auth/forgotPassword',
+  async (args: { email: string }) => {
+    const { email } = args;
+    // TODO: так можно???? args
+    const data = await forgotPasswordApi({ email });
+    return data;
+  }
+);
+
+// Thunk для запроса изменения пароля
+export const resetPassword = createAsyncThunk(
+  'auth/resetPassword',
+  async (args: { password: string; token: string }) => {
+    const { password, token } = args;
+    // TODO: так можно???? args
+    const data = await resetPasswordApi({ password, token });
+    return data;
+  }
+);
+
+// Thunk для выхода пользователя
+export const logoutUser = createAsyncThunk(
+  'auth/logoutUser',
+  async (_, { rejectWithValue }) => {
+    try {
+      await logoutApi();
+      return true;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
 );
 
@@ -50,7 +105,7 @@ const authInitialState: AuthState = {
   user: null
 };
 
-// Создание слайса для аутентификации и пользователя
+// Создание слайса для аутентификации, пользователя, управления паролем
 const authSlice = createSlice({
   name: 'auth',
   initialState: authInitialState,
@@ -70,10 +125,9 @@ const authSlice = createSlice({
     builder
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isAuthenticated = true;
-        state.user = action.payload.user;
+        state.user = action.payload;
       })
       .addCase(fetchUser.fulfilled, (state, action) => {
-        console.log(action);
         state.isAuthenticated = true;
         state.user = action.payload;
       })
@@ -83,7 +137,26 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isAuthenticated = true;
-        state.user = action.payload;
+        state.user = action.payload.user;
+        setCookie('accessToken', action.payload.accessToken);
+        setCookie('refreshToken', action.payload.refreshToken);
+        setCookie('userData', JSON.stringify(action.payload.user));
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.isAuthenticated = false;
+        state.user = null;
+        deleteCookie('accessToken');
+        deleteCookie('refreshToken');
+        deleteCookie('userData');
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        console.error('Ошибка выхода:', action.error);
+      })
+      .addCase(fetchWithRefreshThunk.fulfilled, (state, action) => {
+        console.log('Fetch with refresh successful:', action.payload);
+      })
+      .addCase(fetchWithRefreshThunk.rejected, (state, action) => {
+        console.error('Ошибка запроса с обновлением токена:', action.error);
       });
   }
 });

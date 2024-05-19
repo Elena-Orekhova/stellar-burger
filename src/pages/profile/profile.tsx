@@ -13,8 +13,6 @@ export const Profile: FC = () => {
     email: user?.email || '',
     password: ''
   });
-  console.log('222222');
-  // TODO: console.log
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);

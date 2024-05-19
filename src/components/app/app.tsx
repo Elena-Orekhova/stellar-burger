@@ -45,33 +45,33 @@ const App = () => {
         <Route
           path='/forgot-password'
           element={
-            <ProtectedRoute>
-              <ForgotPassword />
-            </ProtectedRoute>
+            // <ProtectedRoute>
+            <ForgotPassword />
+            // </ProtectedRoute>
           }
         />
         <Route
           path='/reset-password'
           element={
-            <ProtectedRoute>
-              <ResetPassword />
-            </ProtectedRoute>
+            // <ProtectedRoute>
+            <ResetPassword />
+            // </ProtectedRoute>
           }
         />
         <Route
           path='/profile'
           element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
+            // <ProtectedRoute>
+            <Profile />
+            // </ProtectedRoute>
           }
         />
         <Route
           path='/profile/orders'
           element={
-            <ProtectedRoute>
-              <ProfileOrders />
-            </ProtectedRoute>
+            // <ProtectedRoute>
+            <ProfileOrders />
+            // </ProtectedRoute>
           }
         />
         <Route path='*' element={<NotFound404 />} />
@@ -105,16 +105,16 @@ const App = () => {
         <Route
           path='/profile/orders/:number'
           element={
-            <ProtectedRoute>
-              <Modal
-                title='Order Info'
-                onClose={() => {
-                  navigate('/profile/orders/');
-                }}
-              >
-                <OrderInfo />
-              </Modal>
-            </ProtectedRoute>
+            // <ProtectedRoute>
+            <Modal
+              title='Детали вашего заказа'
+              onClose={() => {
+                navigate('/profile/orders/');
+              }}
+            >
+              <OrderInfo />
+            </Modal>
+            // </ProtectedRoute>
           }
         />
       </Routes>
