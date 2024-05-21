@@ -47,16 +47,15 @@ export const BurgerIngredients: FC = () => {
     }
   }, [inViewBuns, inViewFilling, inViewSauces]);
 
-  //TODO:прокрутка до нужного заголовка нажимая на вкладку
-
   const onTabClick = (tab: TTabMode) => {
     setCurrentTab(tab);
-    if (tab === 'bun')
-      titleBunRef.current?.scrollIntoView({ behavior: 'smooth' });
-    if (tab === 'main')
-      titleMainRef.current?.scrollIntoView({ behavior: 'smooth' });
-    if (tab === 'sauce')
-      titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (tab === 'bun' && titleBunRef.current) {
+      titleBunRef.current.scrollIntoView({ behavior: 'smooth' });
+    } else if (tab === 'main' && titleMainRef.current) {
+      titleMainRef.current.scrollIntoView({ behavior: 'smooth' });
+    } else if (tab === 'sauce' && titleSaucesRef.current) {
+      titleSaucesRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const buns = ingredients.filter((ingredient) => ingredient.type === 'bun');

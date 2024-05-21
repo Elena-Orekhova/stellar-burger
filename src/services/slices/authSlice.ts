@@ -4,17 +4,36 @@ import {
   logoutApi,
   getUserApi,
   registerUserApi,
-  TRegisterData,
-  TLoginData,
   forgotPasswordApi,
   resetPasswordApi,
+  updateUserApi,
   fetchWithRefresh,
+  TRegisterData,
+  TLoginData,
   TRefreshResponse,
-  TAuthResponse
+  TAuthResponse,
+  TUserResponse
 } from '@api';
 import { TUser } from '@utils-types';
 import { RootState } from '../../services/store';
-import { deleteCookie, setCookie } from '../../utils/cookie';
+import { deleteCookie, setCookie, getCookie } from '../../utils/cookie';
+
+// Интерфейсы
+interface AuthState {
+  isAuthenticated: boolean;
+  isAuthChecked: boolean;
+  user: TUser | null;
+}
+
+const authInitialState: AuthState = {
+  isAuthenticated: false,
+  isAuthChecked: false,
+  user: null
+};
+
+// Селекторы
+export const selectAuthState = (state: RootState) => state.auth;
+export const selectUser = (state: RootState): TUser | null => state.auth.user;
 
 // Thunk для отправки запросов с автоматическим обновлением токенов
 export const fetchWithRefreshThunk = createAsyncThunk<
@@ -30,19 +49,28 @@ export const fetchWithRefreshThunk = createAsyncThunk<
 });
 
 // Thunk для аутентификации пользователя
-export const loginUser = createAsyncThunk<TUser, TLoginData>(
+export const loginUser = createAsyncThunk<TAuthResponse, TLoginData>(
   'auth/loginUser',
-  async (loginData) => {
-    const data = await loginUserApi(loginData);
-    return data.user;
+  async (body) => {
+    const data = await loginUserApi(body);
+    return data;
   }
 );
 
-// Thunk для получения информации о пользователе
+// Thunk для получения данных о пользователе
 export const fetchUser = createAsyncThunk('auth/fetchUser', async () => {
   const data = await getUserApi();
   return data.user;
 });
+
+// Thunk для обновления данных о пользователе
+export const updateUser = createAsyncThunk<TUserResponse, TRegisterData>(
+  'auth/fetchNewDateUser',
+  async (body) => {
+    const user = await updateUserApi(body);
+    return user;
+  }
+);
 
 // Thunk для регистрации пользователеля
 export const registerUser = createAsyncThunk<TAuthResponse, TRegisterData>(
@@ -58,7 +86,6 @@ export const forgotPassword = createAsyncThunk(
   'auth/forgotPassword',
   async (args: { email: string }) => {
     const { email } = args;
-    // TODO: так можно???? args
     const data = await forgotPasswordApi({ email });
     return data;
   }
@@ -69,98 +96,82 @@ export const resetPassword = createAsyncThunk(
   'auth/resetPassword',
   async (args: { password: string; token: string }) => {
     const { password, token } = args;
-    // TODO: так можно???? args
     const data = await resetPasswordApi({ password, token });
     return data;
   }
 );
 
 // Thunk для выхода пользователя
-export const logoutUser = createAsyncThunk(
-  'auth/logoutUser',
-  async (_, { rejectWithValue }) => {
-    try {
-      await logoutApi();
-      return true;
-    } catch (error) {
-      return rejectWithValue(error);
-    }
+export const logoutUser = createAsyncThunk('auth/logoutUser', async () => {
+  const refreshToken = getCookie('refreshToken');
+  if (!refreshToken) {
+    throw new Error('Требуется токен');
   }
-);
-
-// Селекторы
-export const selectAuthState = (state: RootState) => state.auth;
-export const selectUser = (state: RootState): TUser | null => state.auth.user;
-
-// Интерфейсы
-interface AuthState {
-  isAuthenticated: boolean;
-  isAuthChecked: boolean;
-  user: TUser | null;
-}
-
-const authInitialState: AuthState = {
-  isAuthenticated: false,
-  isAuthChecked: false,
-  user: null
-};
+  await logoutApi();
+  return true;
+});
 
 // Создание слайса для аутентификации, пользователя, управления паролем
 const authSlice = createSlice({
   name: 'auth',
   initialState: authInitialState,
-  reducers: {
-    setAuth(state, action: PayloadAction<AuthState>) {
-      return { ...state, ...action.payload };
-    },
-    logout(state) {
-      state.isAuthenticated = false;
-      state.user = null;
-    },
-    setUser(state, action: PayloadAction<TUser | null>) {
-      state.user = action.payload;
-    }
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isAuthenticated = true;
-        state.user = action.payload;
-      })
-      .addCase(fetchUser.fulfilled, (state, action) => {
-        state.isAuthenticated = true;
-        state.user = action.payload;
+        state.user = action.payload.user;
+        setCookie('accessToken', action.payload.accessToken);
+        setCookie('userData', JSON.stringify(action.payload.user));
+        localStorage.setItem('refreshToken', action.payload.refreshToken);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isAuthenticated = false;
         state.user = null;
       })
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.isAuthenticated = true;
+        state.user = action.payload;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.isAuthenticated = true;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isAuthenticated = true;
+        state.user = action.payload.user;
+        setCookie('userData', JSON.stringify(action.payload.user));
+      })
+      .addCase(updateUser.rejected, (state) => {
+        state.isAuthenticated = false;
+      })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isAuthenticated = true;
         state.user = action.payload.user;
         setCookie('accessToken', action.payload.accessToken);
-        setCookie('refreshToken', action.payload.refreshToken);
         setCookie('userData', JSON.stringify(action.payload.user));
+        localStorage.setItem('refreshToken', action.payload.refreshToken);
+      })
+      .addCase(registerUser.rejected, (state) => {
+        state.isAuthenticated = false;
+        state.user = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.isAuthenticated = true;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.isAuthenticated = true;
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.isAuthenticated = false;
         state.user = null;
         deleteCookie('accessToken');
-        deleteCookie('refreshToken');
         deleteCookie('userData');
+        localStorage.removeItem('refreshToken');
       })
       .addCase(logoutUser.rejected, (state, action) => {
         console.error('Ошибка выхода:', action.error);
-      })
-      .addCase(fetchWithRefreshThunk.fulfilled, (state, action) => {
-        console.log('Fetch with refresh successful:', action.payload);
-      })
-      .addCase(fetchWithRefreshThunk.rejected, (state, action) => {
-        console.error('Ошибка запроса с обновлением токена:', action.error);
       });
   }
 });
-
-export const { setAuth, logout, setUser } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;

@@ -35,5 +35,7 @@ export const Feed: FC = () => {
     return <Preloader />;
   }
 
+  // TODO: при нажатии на кнопку обновить не показывается лоудер
+
   return <FeedUI orders={orders} handleGetFeeds={handleGetFeeds} />;
 };

@@ -1,56 +1,51 @@
 import React from 'react';
-import { Route, Navigate } from 'react-router-dom';
+import { Route, Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Preloader } from '../ui/preloader';
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../services/store';
+import { selectAuthState } from '../../services/slices/authSlice';
 
-// Селекторы для работы с состоянием аутентификации
-export const selectAuthState = (state: RootState) => state.auth;
+// Типы
+type ProtectedRouteProps = {
+  children: React.ReactElement;
+  onlyUnAuth?: boolean;
+};
 
-export const selectIsAuthChecked = createSelector(
+// Селектор для проверки состояния аутентификации
+const isAuthCheckedSelector = createSelector(
   [selectAuthState],
   (authState) => authState.isAuthChecked
 );
+const isAuthenticatedSelector = createSelector(
+  [selectAuthState],
+  (authState) => authState.isAuthenticated
+);
 
-// Типы пропсов защищенного маршрута
-type ProtectedRouteProps = {
-  children: React.ReactElement;
-  unAuthOnly?: boolean;
-};
-
-// Компонент защищенного маршрута
+// TODO: ?убрать весь useNavigate+navigate для перенапраления страниц
+// TODO: настроить правильно Защищенный маршрут
+// Защищенный маршрут
 export const ProtectedRoute = ({
-  children,
-  unAuthOnly = false
+  onlyUnAuth,
+  children
 }: ProtectedRouteProps) => {
-  const isAuthChecked = useSelector(selectIsAuthChecked);
+  const isAuthChecked = useSelector(isAuthCheckedSelector);
+  const isAuthenticated = useSelector(isAuthenticatedSelector);
+  const location = useLocation();
 
-  // Показываем прелоадер, пока не завершится проверка аутентификации
   // if (!isAuthChecked) {
   //   return <Preloader />;
   // }
 
-  // Проверяем, авторизован ли пользователь
-  const isAuthenticated = false;
-
-  // Если маршрут только для неавторизованных пользователей
-  if (unAuthOnly) {
-    return isAuthenticated ? (
-      <Navigate to='/login' replace />
-    ) : (
-      <Route>{children}</Route>
-    );
+  if (!onlyUnAuth && !isAuthenticated) {
+    return <Navigate replace to='/login' state={{ from: location }} />;
   }
 
-  // Если маршрут только для авторизованных пользователей
-  if (!unAuthOnly) {
-    return isAuthenticated ? (
-      <Route>{children}</Route>
-    ) : (
-      <Navigate to='/profile' replace />
-    );
+  if (onlyUnAuth && isAuthenticated) {
+    const from = location.state?.from || { pathname: '/' };
+
+    return <Navigate replace to={from} />;
   }
 
-  return null;
+  return children;
 };

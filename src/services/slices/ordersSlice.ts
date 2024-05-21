@@ -1,22 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
-import { getFeedsApi, getOrderByNumberApi } from '@api';
-
-// Thunk функция для ленты заказов
-export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
-  const response = await getFeedsApi();
-  return response;
-});
-
-export const fetchOrder = createAsyncThunk(
-  'order/fetchOrder',
-  async (orderNumber: number) => {
-    const response = await getOrderByNumberApi(orderNumber);
-    return response;
-  }
-);
-
-// Селекторы
+import {
+  getFeedsApi,
+  getOrderByNumberApi,
+  getOrdersApi,
+  orderBurgerApi
+} from '@api';
+import { setOrderModalData } from './orderModalDataSlice';
+import { RootState } from '../../services/store';
 
 // Интерфейсы
 interface OrdersState {
@@ -28,6 +19,7 @@ interface OrdersState {
   orderData: TOrder | null;
   loading: boolean;
   error: string | null;
+  status: 'pending' | 'done' | 'created';
 }
 
 const initialState: OrdersState = {
@@ -38,8 +30,33 @@ const initialState: OrdersState = {
   request: false,
   orderData: null,
   loading: false,
-  error: null
+  error: null,
+  status: 'created'
 };
+
+// Thunk функция для ленты заказов
+export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
+  const response = await getFeedsApi();
+  return response;
+});
+
+// Thunk функция для деталей заказа
+export const fetchOrder = createAsyncThunk(
+  'order/fetchOrder',
+  async (orderNumber: number) => {
+    const response = await getOrderByNumberApi(orderNumber);
+    return response;
+  }
+);
+
+// Thunk функция для заказов пользователя
+export const fetchProfileOrders = createAsyncThunk(
+  'orders/fetchProfileOrders',
+  async () => {
+    const response = await getOrdersApi();
+    return response;
+  }
+);
 
 // Создание слайса для заказов
 const ordersSlice = createSlice({
@@ -67,14 +84,27 @@ const ordersSlice = createSlice({
       })
       .addCase(fetchOrder.fulfilled, (state, action) => {
         state.orderData = action.payload.orders[0];
-        // TODO: orders[0] так и должен быть?
-        // state.loading = false;
-        // state.error = null;
+        state.loading = false;
       })
       .addCase(fetchOrder.rejected, (state, action) => {
         state.orderData = null;
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch order';
+        state.error = action.error.message || 'Не удалось получить заказ';
+      })
+      .addCase(fetchProfileOrders.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchProfileOrders.fulfilled, (state, action) => {
+        state.orders = action.payload;
+        state.loading = false;
+        state.success = true;
+      })
+      .addCase(fetchProfileOrders.rejected, (state, action) => {
+        state.orders = [];
+        state.loading = false;
+        state.success = false;
+        state.error =
+          action.error.message || 'Не удалось получить заказы пользователя';
       });
   }
 });

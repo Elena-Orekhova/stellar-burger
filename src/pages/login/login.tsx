@@ -8,17 +8,21 @@ import { useNavigate } from 'react-router-dom';
 export const Login: FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
+    setError(null);
 
     const resultActionLogin = await dispatch(loginUser({ email, password }));
     if (loginUser.fulfilled.match(resultActionLogin)) {
       navigate('/');
+    } else if (loginUser.rejected.match(resultActionLogin)) {
+      setError('Неправильный логин или пароль');
     }
-    1;
+    //TODO: сообщение об ошибке не видно на экране
   };
 
   return (

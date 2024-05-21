@@ -33,14 +33,14 @@ export const BurgerIngredientsUI: FC<BurgerIngredientsUIProps> = memo(
             <Tab
               value='main'
               active={currentTab === 'main'}
-              onClick={() => onTabClick('bun')}
+              onClick={() => onTabClick('main')}
             >
               Начинки
             </Tab>
             <Tab
               value='sauce'
               active={currentTab === 'sauce'}
-              onClick={() => onTabClick('bun')}
+              onClick={() => onTabClick('sauce')}
             >
               Соусы
             </Tab>

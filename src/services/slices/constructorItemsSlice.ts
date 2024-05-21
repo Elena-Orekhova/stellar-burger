@@ -3,10 +3,7 @@ import { TConstructorIngredient } from '../../utils/types';
 
 // Интерфейсы
 interface ConstructorItemsState {
-  bun: {
-    _id: string;
-    price: number;
-  } | null;
+  bun: TConstructorIngredient | null;
   ingredients: TConstructorIngredient[];
 }
 
@@ -54,6 +51,10 @@ export const constructorItemsSlice = createSlice({
       state.ingredients = state.ingredients.filter(
         (ingredient) => ingredient._id !== idToRemove
       );
+    },
+    clearConstructor(state) {
+      state.bun = null;
+      state.ingredients = [];
     }
   }
 });
@@ -62,7 +63,8 @@ export const {
   addIngredient,
   moveIngredientUp,
   moveIngredientDown,
-  removeIngredient
+  removeIngredient,
+  clearConstructor
 } = constructorItemsSlice.actions;
 
 export const constructorItemsReducer = constructorItemsSlice.reducer;
