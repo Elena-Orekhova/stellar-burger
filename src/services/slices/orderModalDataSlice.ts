@@ -1,6 +1,5 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
-import { RootState } from '../store';
 import { orderBurgerApi } from '@api';
 import { clearConstructor } from './constructorItemsSlice';
 
@@ -15,17 +14,15 @@ const initialState: OrderModalDataState = {
   loading: false
 };
 
-// Thunk функция для создания нового заказа и обновления данных модального окна
+// Thunk функция для создания нового заказа
 export const fetchNewOrders = createAsyncThunk(
   'orderModalData/fetchNewOrders',
   async (ingredientIds: string[], { dispatch }) => {
     const response = await orderBurgerApi(ingredientIds);
     if (response.success) {
-      dispatch(setOrderModalData(response.order));
       dispatch(clearConstructor());
-      //TODO: dispatch?????
     } else {
-      throw new Error('Failed to create order');
+      throw new Error('Ошибка при создании заказа');
     }
     return response.order;
   }
@@ -36,9 +33,6 @@ const orderModalDataSlice = createSlice({
   name: 'orderModalData',
   initialState,
   reducers: {
-    setOrderModalData(state, action: PayloadAction<TOrder | null>) {
-      state.data = action.payload;
-    },
     clearOrderModalData(state) {
       state.data = null;
     }
@@ -58,7 +52,6 @@ const orderModalDataSlice = createSlice({
   }
 });
 
-export const { setOrderModalData, clearOrderModalData } =
-  orderModalDataSlice.actions;
+export const { clearOrderModalData } = orderModalDataSlice.actions;
 
 export const orderModalDataReducer = orderModalDataSlice.reducer;

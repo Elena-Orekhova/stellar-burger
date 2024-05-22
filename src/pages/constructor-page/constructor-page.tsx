@@ -1,5 +1,3 @@
-// import { useSelector } from '../../ces/store';
-
 import styles from './constructor-page.module.css';
 
 import { BurgerIngredients } from '../../components';

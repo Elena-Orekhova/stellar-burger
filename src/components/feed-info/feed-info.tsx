@@ -1,9 +1,8 @@
-import { FC, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { AppDispatch, RootState } from '../../services/store';
+import { FC } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../services/store';
 import { TOrder } from '@utils-types';
 import { FeedInfoUI } from '../ui/feed-info';
-import { fetchOrders } from '../../services/slices/ordersSlice';
 
 const getOrders = (orders: TOrder[], status: string): number[] =>
   orders

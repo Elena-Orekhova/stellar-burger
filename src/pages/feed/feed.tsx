@@ -16,6 +16,7 @@ export const Feed: FC = () => {
     (state: RootState) => state.orders.orders
   );
   const ingredients = useSelector(selectIngredients);
+  const loading = useSelector((state: RootState) => state.orders.loading);
 
   useEffect(() => {
     dispatch(fetchOrders());
@@ -31,11 +32,9 @@ export const Feed: FC = () => {
     dispatch(fetchOrders());
   };
 
-  if (!orders.length) {
+  if (loading) {
     return <Preloader />;
   }
-
-  // TODO: при нажатии на кнопку обновить не показывается лоудер
 
   return <FeedUI orders={orders} handleGetFeeds={handleGetFeeds} />;
 };

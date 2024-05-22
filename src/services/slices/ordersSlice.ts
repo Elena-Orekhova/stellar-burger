@@ -1,13 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
-import {
-  getFeedsApi,
-  getOrderByNumberApi,
-  getOrdersApi,
-  orderBurgerApi
-} from '@api';
-import { setOrderModalData } from './orderModalDataSlice';
-import { RootState } from '../../services/store';
+import { getFeedsApi, getOrderByNumberApi, getOrdersApi } from '@api';
 
 // Интерфейсы
 interface OrdersState {
@@ -79,6 +72,7 @@ const ordersSlice = createSlice({
         state.success = false;
         state.loading = false;
       })
+
       .addCase(fetchOrder.pending, (state) => {
         state.loading = true;
       })
@@ -91,6 +85,7 @@ const ordersSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Не удалось получить заказ';
       })
+
       .addCase(fetchProfileOrders.pending, (state) => {
         state.loading = true;
       })

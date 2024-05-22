@@ -8,8 +8,6 @@ import {
   clearOrderModalData
 } from '../../services/slices/orderModalDataSlice';
 import { AppDispatch } from '../../services/store';
-import { isAction } from '@reduxjs/toolkit';
-import { setOrderModalData } from '../../services/slices/orderModalDataSlice';
 import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
@@ -18,12 +16,11 @@ export const BurgerConstructor: FC = () => {
   const constructorItems = useSelector(
     (state: RootState) => state.constructorItems
   );
-  const orderRequest = useSelector((state: RootState) => state.orders.request);
+  const orderRequest = useSelector(
+    (state: RootState) => state.orderModalData.loading
+  );
   const orderModalData = useSelector(
     (state: RootState) => state.orderModalData.data
-  );
-  const isLoading = useSelector(
-    (state: RootState) => state.orderModalData.loading
   );
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
@@ -45,7 +42,6 @@ export const BurgerConstructor: FC = () => {
   const closeOrderModal = () => {
     dispatch(clearOrderModalData());
   };
-  //TODO: долго грузит, не показывает лоадер
 
   const price = useMemo(
     () =>
