@@ -28,27 +28,18 @@ const initialState: OrdersState = {
 };
 
 // Thunk функция для ленты заказов
-export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
-  const response = await getFeedsApi();
-  return response;
-});
+export const fetchOrders = createAsyncThunk('orders/fetchOrders', getFeedsApi);
 
 // Thunk функция для деталей заказа
 export const fetchOrder = createAsyncThunk(
   'order/fetchOrder',
-  async (orderNumber: number) => {
-    const response = await getOrderByNumberApi(orderNumber);
-    return response;
-  }
+  getOrderByNumberApi
 );
 
 // Thunk функция для заказов пользователя
 export const fetchProfileOrders = createAsyncThunk(
   'orders/fetchProfileOrders',
-  async () => {
-    const response = await getOrdersApi();
-    return response;
-  }
+  getOrdersApi
 );
 
 // Создание слайса для заказов
