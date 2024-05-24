@@ -1,10 +1,9 @@
 import { FC, memo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { addIngredient } from '../../services/slices/constructorItemsSlice';
-
+import { useDispatch } from '../../services/store';
 import { BurgerIngredientUI } from '@ui';
 import { TBurgerIngredientProps } from './type';
+import { addIngredient } from '../../services/slices/constructorItemsSlice';
 
 export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
   ({ ingredient, count }) => {
@@ -12,7 +11,7 @@ export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
     const dispatch = useDispatch();
 
     const handleAdd = () => {
-      dispatch(addIngredient({ ...ingredient, id: ingredient._id }));
+      dispatch(addIngredient({ ...ingredient }));
     };
 
     return (
