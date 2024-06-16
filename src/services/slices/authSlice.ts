@@ -19,7 +19,7 @@ import { RootState } from '../../services/store';
 import { deleteCookie, setCookie } from '../../utils/cookie';
 
 // Интерфейсы
-interface AuthState {
+export interface AuthState {
   isAuthenticated: boolean;
   isAuthChecked: boolean;
   user: TUser | null;
@@ -217,7 +217,7 @@ const authSlice = createSlice({
         localStorage.removeItem('refreshToken');
       })
       .addCase(logoutUser.rejected, (state, action) => {
-        console.error('Ошибка выхода:', action.error);
+        // console.error('Ошибка выхода:', action.error);
         state.loading = false;
       });
   }

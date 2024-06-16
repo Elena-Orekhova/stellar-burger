@@ -3,7 +3,7 @@ import { TOrder } from '@utils-types';
 import { getFeedsApi, getOrderByNumberApi, getOrdersApi } from '@api';
 
 // Интерфейсы
-interface OrdersState {
+export interface OrdersState {
   orders: TOrder[];
   success: boolean;
   total: number;

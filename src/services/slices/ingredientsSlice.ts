@@ -17,24 +17,16 @@ export const selectIngredients = (state: RootState): TIngredient[] =>
   state.ingredients.ingredients;
 
 // Интерфейсы
-interface IngredientsState {
+export interface IngredientsState {
   ingredients: TIngredient[];
   loading: boolean;
-  error: string | null;
-  modal: {
-    isOpen: boolean;
-    ingredient: TIngredient | null;
-  };
+  error: string | Error | null;
 }
 
 const initialState: IngredientsState = {
   ingredients: [],
   loading: false,
-  error: null,
-  modal: {
-    isOpen: false,
-    ingredient: null
-  }
+  error: null
 };
 
 // Создание слайса для ингредиентов
