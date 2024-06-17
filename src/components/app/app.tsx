@@ -97,7 +97,7 @@ const App = () => {
             path='/ingredients/:id'
             element={
               <Modal
-                title='Детали ингредиентов'
+                title='Детали ингредиента'
                 onClose={() => {
                   navigate('/');
                 }}
@@ -115,5 +115,5 @@ const App = () => {
     </div>
   );
 };
-//TODO: прыгают модалки с заказами
+
 export default App;

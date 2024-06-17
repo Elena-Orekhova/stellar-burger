@@ -4,12 +4,12 @@ import { orderBurgerApi } from '@api';
 import { clearConstructor } from './constructorItemsSlice';
 
 // Интерфейсы
-interface OrderModalDataState {
+export interface OrderModalDataState {
   data: TOrder | null;
   loading: boolean;
 }
 
-const initialState: OrderModalDataState = {
+export const initialState: OrderModalDataState = {
   data: null,
   loading: false
 };

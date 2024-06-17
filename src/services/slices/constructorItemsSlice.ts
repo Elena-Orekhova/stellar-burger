@@ -1,15 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TConstructorIngredient, TIngredient } from '../../utils/types';
-import { v4 as uuidv4 } from 'uuid';
 
 // Интерфейсы
-interface ConstructorItemsState {
+export interface ConstructorItemsState {
   bun: TConstructorIngredient | null;
   ingredients: TConstructorIngredient[];
   loading: boolean;
 }
 
-const initialState: ConstructorItemsState = {
+export const initialState: ConstructorItemsState = {
   bun: null,
   ingredients: [],
   loading: false
@@ -28,8 +27,8 @@ export const constructorItemsSlice = createSlice({
           state.ingredients.push(action.payload);
         }
       },
-      prepare(ingredient: TIngredient) {
-        return { payload: { ...ingredient, uniqueId: uuidv4() } };
+      prepare(ingredient: TConstructorIngredient) {
+        return { payload: ingredient };
       }
     },
     moveIngredientUp(state, action: PayloadAction<number>) {
