@@ -1,8 +1,8 @@
-import { constructorItemsReducer } from '../src/services/slices/constructorItemsSlice';
-import { ingredientsReducer } from '../src/services/slices/ingredientsSlice';
-import { orderModalDataReducer } from '../src/services/slices/orderModalDataSlice';
-import { ordersReducer } from '../src/services/slices/ordersSlice';
-import { authReducer } from '../src/services/slices/authSlice';
+import { constructorItemsReducer } from '../constructorItemsSlice';
+import { ingredientsReducer } from '../ingredientsSlice';
+import { orderModalDataReducer } from '../orderModalDataSlice';
+import { ordersReducer } from '../ordersSlice';
+import { authReducer } from '../authSlice';
 import { combineReducers } from 'redux';
 
 describe('rootReducer', () => {

@@ -1,0 +1,6 @@
+{
+  "success": true,
+  "aссessToken": "Bearer fake",
+  "refreshToken": "fake",
+  "user": {"email": "loginuser@gmail.com", "name": "loginuser"}
+}

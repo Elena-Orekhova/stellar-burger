@@ -8,7 +8,7 @@ export interface ConstructorItemsState {
   loading: boolean;
 }
 
-const initialState: ConstructorItemsState = {
+export const initialState: ConstructorItemsState = {
   bun: null,
   ingredients: [],
   loading: false

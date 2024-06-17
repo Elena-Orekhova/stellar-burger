@@ -3,22 +3,10 @@ import {
   fetchOrders,
   fetchOrder,
   fetchProfileOrders,
-  OrdersState
-} from '../src/services/slices/ordersSlice';
+  initialState
+} from '../ordersSlice';
 
 describe('ordersSlice', () => {
-  const initialState: OrdersState = {
-    orders: [],
-    success: false,
-    total: 0,
-    totalToday: 0,
-    request: false,
-    orderData: null,
-    loading: false,
-    error: null,
-    status: 'created'
-  };
-
   it('должен установить loading в true при fetchOrders.pending', () => {
     const action = { type: fetchOrders.pending.type };
     const state = ordersReducer(initialState, action);

@@ -1,8 +1,9 @@
 import {
   fetchIngredients,
   ingredientsReducer,
-  IngredientsState
-} from '../src/services/slices/ingredientsSlice';
+  IngredientsState,
+  initialState
+} from '../ingredientsSlice';
 
 const testData = [
   {
@@ -21,12 +22,6 @@ const testData = [
 ];
 
 describe('ingredientsSlice', () => {
-  const initialState: IngredientsState = {
-    ingredients: [],
-    loading: false,
-    error: null
-  };
-
   it('При вызове экшена булевая переменная меняется на true, когда ожидание отправлено сбрасывает ошибку', () => {
     const actualState = ingredientsReducer(
       {
@@ -44,7 +39,6 @@ describe('ingredientsSlice', () => {
   });
 
   it('При вызове экшена и передаче в него ингредиентов данные записываются в стор и store.isLoading меняется на false', () => {
-  
     const actualState = ingredientsReducer(
       {
         ...initialState,
@@ -65,9 +59,6 @@ describe('ingredientsSlice', () => {
     const expectedState: IngredientsState = {
       ingredients: [],
       loading: false,
-      // error: {
-      //   message: testError.message
-      // }
       error: testError.message
     };
 

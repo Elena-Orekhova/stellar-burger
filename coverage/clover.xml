@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1718574262357" clover="3.2.0">
-  <project timestamp="1718574262357" name="All files">
-    <metrics statements="795" coveredstatements="566" conditionals="47" coveredconditionals="44" methods="33" coveredmethods="14" elements="875" coveredelements="624" complexity="0" loc="795" ncloc="795" packages="2" files="7" classes="7"/>
+<coverage generated="1718621981098" clover="3.2.0">
+  <project timestamp="1718621981098" name="All files">
+    <metrics statements="794" coveredstatements="565" conditionals="47" coveredconditionals="44" methods="33" coveredmethods="14" elements="874" coveredelements="623" complexity="0" loc="794" ncloc="794" packages="2" files="7" classes="7"/>
     <package name="services.slices">
-      <metrics statements="513" coveredstatements="445" conditionals="39" coveredconditionals="36" methods="15" coveredmethods="12"/>
+      <metrics statements="512" coveredstatements="444" conditionals="39" coveredconditionals="36" methods="15" coveredmethods="12"/>
       <file name="authSlice.ts" path="C:\Users\lelya\yandex\stellar-burgers\src\services\slices\authSlice.ts">
-        <metrics statements="226" coveredstatements="170" conditionals="9" coveredconditionals="9" methods="3" coveredmethods="1"/>
+        <metrics statements="225" coveredstatements="169" conditionals="9" coveredconditionals="9" methods="3" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -226,12 +226,11 @@
         <line num="218" count="2" type="stmt"/>
         <line num="219" count="2" type="cond" truecount="1" falsecount="0"/>
         <line num="220" count="1" type="stmt"/>
-        <line num="221" count="1" type="stmt"/>
+        <line num="221" count="2" type="stmt"/>
         <line num="222" count="2" type="stmt"/>
-        <line num="223" count="2" type="stmt"/>
+        <line num="223" count="1" type="stmt"/>
         <line num="224" count="1" type="stmt"/>
         <line num="225" count="1" type="stmt"/>
-        <line num="226" count="1" type="stmt"/>
       </file>
       <file name="constructorItemsSlice.ts" path="C:\Users\lelya\yandex\stellar-burgers\src\services\slices\constructorItemsSlice.ts">
         <metrics statements="76" coveredstatements="76" conditionals="8" coveredconditionals="8" methods="7" coveredmethods="7"/>

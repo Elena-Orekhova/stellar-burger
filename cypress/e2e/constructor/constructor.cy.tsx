@@ -1,21 +1,27 @@
 /// <reference types="cypress" />
 
+const testUrl = 'http://localhost:4000';
+const ingredientDetails = 'Детали ингредиента';
+const ingredientFirst = 'Ингредиент 1';
+const ingredientThird = 'Ингредиент 3';
+const ingredientTwelfth = 'Ингредиент 12';
+
 describe('Тесты для конструктора бургера', () => {
   // Перехват запроса к API ингредиентов и возвращение моковых данных
   beforeEach(() => {
     cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients.json' });
     cy.viewport(1300, 800);
-    cy.visit('http://localhost:4000');
+    cy.visit(testUrl);
   });
 
   // Добавление булки и ингредиентов в конструктор
   it('добавление булки в конструктор', () => {
     cy.get('[data-cy=bun-ingredients]').contains('Добавить').click();
     cy.get('[data-cy=constructor-bun-1]')
-      .contains('Ингредиент 1')
+      .contains(ingredientFirst)
       .should('exist');
     cy.get('[data-cy=constructor-bun-2]')
-      .contains('Ингредиент 1')
+      .contains(ingredientFirst)
       .should('exist');
   });
 
@@ -41,29 +47,29 @@ describe('Тесты для модального окна', () => {
   beforeEach(() => {
     cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients.json' });
     cy.viewport(1300, 800);
-    cy.visit('http://localhost:4000');
+    cy.visit(testUrl);
   });
 
   // Открытие и закрытие модальных окон по клику на Х и оверлей
   it('открытие модальных окон', () => {
-    cy.contains('Детали ингредиента').should('not.exist');
-    cy.contains('Ингредиент 1').click();
-    cy.contains('Детали ингредиента').should('exist');
-    cy.get('#modals').contains('Ингредиент 1').should('exist');
+    cy.contains(ingredientDetails).should('not.exist');
+    cy.contains(ingredientFirst).click();
+    cy.contains(ingredientDetails).should('exist');
+    cy.get('#modals').contains(ingredientFirst).should('exist');
   });
 
   it('закрытие модальных окон на Х', () => {
-    cy.contains('Ингредиент 1').click();
-    cy.contains('Детали ингредиента').should('exist');
+    cy.contains(ingredientFirst).click();
+    cy.contains(ingredientDetails).should('exist');
     cy.get('#modals button[aria-label="Закрыть"]').click();
-    cy.contains('Детали ингредиента').should('not.exist');
+    cy.contains(ingredientDetails).should('not.exist');
   });
 
   it('закрытие модальных окон на оверлей', () => {
-    cy.contains('Ингредиент 1').click();
-    cy.contains('Детали ингредиента').should('exist');
+    cy.contains(ingredientFirst).click();
+    cy.contains(ingredientDetails).should('exist');
     cy.get('[data-cy=modal-overlay]').click('right', { force: true });
-    cy.contains('Детали ингредиента').should('not.exist');
+    cy.contains(ingredientDetails).should('not.exist');
   });
 
   afterEach(() => {
@@ -86,7 +92,7 @@ describe('Тесты для оформления заказа', () => {
     );
     cy.setCookie('accessToken', 'test-accessToken');
     cy.viewport(1300, 800);
-    cy.visit('http://localhost:4000');
+    cy.visit(testUrl);
   });
 
   it('создание заказа', () => {
@@ -110,7 +116,7 @@ describe('Тесты для оформления заказа', () => {
 
     // проверка, что конструктор пуст
     cy.get('[data-cy=constructor]')
-      .contains('Ингредиент 1')
+      .contains(ingredientFirst)
       .should('not.exist');
     cy.get('[data-cy=constructor]')
       .contains('Ингредиент 3')

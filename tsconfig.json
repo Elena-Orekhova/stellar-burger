@@ -28,5 +28,5 @@
       "@selectors": ["src/services/selectors"]
     }
   },
-  "include": ["src", "__tests__/orderModalDataSlice.test.ts"]
+  "include": ["src", "src/services/slices/__tests__/orderModalDataSlice.test.ts"]
 }

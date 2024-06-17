@@ -7,8 +7,8 @@ import {
   removeIngredient,
   clearConstructor,
   setLoading,
-  ConstructorItemsState
-} from '../src/services/slices/constructorItemsSlice';
+  initialState
+} from '../constructorItemsSlice';
 
 const testIngredient = {
   _id: '1',
@@ -25,7 +25,7 @@ const testIngredient = {
   uniqueId: uuidv4()
 };
 
-const testIngredient2 = {
+const testIngredientSecond = {
   _id: '2',
   name: 'Ingredient 2',
   type: 'type1',
@@ -56,14 +56,18 @@ const testBun = {
 };
 
 describe('constructorSlice', () => {
-  const initialConstructorState: ConstructorItemsState = {
-    bun: null,
-    ingredients: [testIngredient],
-    loading: false
+  const initialConstructorState = {
+    ...initialState,
+    ingredients: [testIngredient]
+  };
+
+  const initialStateTwoIngredients = {
+    ...initialConstructorState,
+    ingredients: [testIngredient, testIngredientSecond]
   };
 
   it('обработка экшена добавления ингредиента', () => {
-    const action = addIngredient(testIngredient2);
+    const action = addIngredient(testIngredientSecond);
     const actualState = constructorItemsSlice.reducer(
       initialConstructorState,
       action
@@ -71,7 +75,7 @@ describe('constructorSlice', () => {
 
     expect(actualState.ingredients).toHaveLength(2);
     expect(actualState.ingredients[1]).toEqual(
-      expect.objectContaining(testIngredient2)
+      expect.objectContaining(testIngredientSecond)
     );
     expect(actualState.ingredients[1]).toHaveProperty('uniqueId');
   });
@@ -88,48 +92,45 @@ describe('constructorSlice', () => {
   });
 
   it('обработка экшена удаления ингредиента', () => {
-    const initialState = {
-      ...initialConstructorState,
-      ingredients: [testIngredient]
-    };
     const action = removeIngredient(0);
-    const actualState = constructorItemsSlice.reducer(initialState, action);
+    const actualState = constructorItemsSlice.reducer(
+      initialConstructorState,
+      action
+    );
 
     expect(actualState.ingredients).toHaveLength(0);
   });
 
   it('обработка экшена изменения порядка ингредиентов в начинке (вверх)', () => {
-    const initialState = {
-      ...initialConstructorState,
-      ingredients: [testIngredient, testIngredient2]
-    };
     const action = moveIngredientUp(1);
-    const actualState = constructorItemsSlice.reducer(initialState, action);
+    const actualState = constructorItemsSlice.reducer(
+      initialStateTwoIngredients,
+      action
+    );
 
     expect(actualState.ingredients[0]._id).toBe('2');
     expect(actualState.ingredients[1]._id).toBe('1');
   });
 
   it('обработка экшена изменения порядка ингредиентов в начинке (вниз)', () => {
-    const initialState = {
-      ...initialConstructorState,
-      ingredients: [testIngredient, testIngredient2]
-    };
     const action = moveIngredientDown(0);
-    const actualState = constructorItemsSlice.reducer(initialState, action);
+    const actualState = constructorItemsSlice.reducer(
+      initialStateTwoIngredients,
+      action
+    );
 
     expect(actualState.ingredients[0]._id).toBe('2');
     expect(actualState.ingredients[1]._id).toBe('1');
   });
 
   it('обработка экшена очистки конструктора', () => {
-    const initialState = {
+    const initialStateBun = {
       bun: testBun,
       ingredients: [testIngredient],
       loading: false
     };
     const action = clearConstructor();
-    const actualState = constructorItemsSlice.reducer(initialState, action);
+    const actualState = constructorItemsSlice.reducer(initialStateBun, action);
 
     expect(actualState.bun).toBeNull();
     expect(actualState.ingredients).toHaveLength(0);

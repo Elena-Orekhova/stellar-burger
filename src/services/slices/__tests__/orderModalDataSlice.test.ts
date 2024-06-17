@@ -2,14 +2,14 @@ import {
   orderModalDataReducer,
   fetchNewOrders,
   clearOrderModalData,
-  OrderModalDataState
-} from '../src/services/slices/orderModalDataSlice';
+  OrderModalDataState,
+  initialState
+} from '../orderModalDataSlice';
 import { TOrder } from '@utils-types';
-import { v4 as uuidv4 } from 'uuid';
 import { jest } from '@jest/globals';
 
 jest.mock('uuid', () => ({
-  v4: jest.fn(),
+  v4: jest.fn()
 }));
 
 const testOrder: TOrder = {
@@ -23,11 +23,6 @@ const testOrder: TOrder = {
 };
 
 describe('orderModalDataSlice', () => {
-  const initialState: OrderModalDataState = {
-    data: null,
-    loading: false
-  };
-
   it('должен установить loading в true при fetchNewOrders.pending', () => {
     const action = { type: fetchNewOrders.pending.type };
     const state = orderModalDataReducer(initialState, action);

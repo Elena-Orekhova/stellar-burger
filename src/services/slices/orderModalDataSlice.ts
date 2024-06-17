@@ -9,7 +9,7 @@ export interface OrderModalDataState {
   loading: boolean;
 }
 
-const initialState: OrderModalDataState = {
+export const initialState: OrderModalDataState = {
   data: null,
   loading: false
 };
